@@ -47,13 +47,12 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader className="p-4">
-                <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold">LOJINHA</span>
-                </div>
-            </SidebarHeader>
-            
             <SidebarContent>
+                <SidebarHeader className="p-4">
+                    <div className="flex items-center gap-3">
+                        <span className="text-lg font-bold">LOJINHA</span>
+                    </div>
+                </SidebarHeader>
                 <SidebarGroup>
                     <SidebarGroupLabel>Menu</SidebarGroupLabel>
                     <SidebarMenu>

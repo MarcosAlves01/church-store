@@ -15,7 +15,7 @@ export default function AppLayout({
         <header className="flex items-center gap-2 border-b px-4">
           <SidebarTrigger />
         </header>
-        <main className="px-4">
+        <main className="p-2">
           <Separator />
           {children}
         </main>

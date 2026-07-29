@@ -1,9 +1,6 @@
+import People from "@/app/modules/People/People";
 
 
-export default function Home() {
-    return (
-        <div>
-            testess
-        </div>
-    )
+export default function Peoples() {
+    return <People />
 }
