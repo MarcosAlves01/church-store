@@ -3,10 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CircleDollarSign, Search, Trash2 } from "lucide-react";
+import { PenBoxIcon, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { People } from "./types";
 import ModalDeletePeople from "./ModalDeletePeople";
+import ModalFormsPeople from "./ModalFormsPeople";
 
 
 const data: People[] =
@@ -56,6 +57,10 @@ export default function TablePeople() {
         name: ""
     })
     const [openModal, setOpenModal] = useState(false)
+    const [openModalEditPeople, setOpenModalEditPeople] = useState(false)
+    const [dataEditPeople, setDataEditPeople] = useState<People>()
+
+
 
     async function getPeople() {
         setPeople(data)
@@ -66,6 +71,10 @@ export default function TablePeople() {
         setOpenModal(true)
     }
 
+    function openModalEditPeoplef(person: People) {
+        setDataEditPeople(person)
+        setOpenModalEditPeople(true)
+    }
 
     async function deletePerson() {
         console.log("deletando pessoa com id: ", openModalDelete.id)
@@ -104,8 +113,9 @@ export default function TablePeople() {
                                     <div className="flex gap-2 items-center">
                                         <Button
                                             size={'lg'}
+                                            onClick={() => openModalEditPeoplef(person)}
                                         >
-                                            <CircleDollarSign />
+                                            <PenBoxIcon />
                                         </Button>
                                         <Button
                                             variant={'destructive'}
@@ -126,6 +136,12 @@ export default function TablePeople() {
                 open={openModal}
                 personName={openModalDelete.name}
                 onChange={deletePerson}
+            />
+            <ModalFormsPeople 
+                mode="edit"
+                open={openModalEditPeople}
+                onOpenChange={() => setOpenModalEditPeople(false)}
+                people={dataEditPeople}
             />
         </div>
     )
