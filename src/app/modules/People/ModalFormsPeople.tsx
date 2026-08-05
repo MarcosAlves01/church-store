@@ -30,7 +30,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
             alert("Preencha todos os campos")
         }
         if (mode === 'create') console.log("Criou:", name, number)
-        if (mode === 'edit') console.log("Editou:", people)
+        if (mode === 'edit') console.log("Editou:", name, number)
     }
 
     useEffect(() => {
@@ -40,7 +40,6 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setName(people.name)
             setNumber(people.number)
-            return
         }
 
         if (mode === "create") {
@@ -59,7 +58,6 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
                         {mode === "create" ? "Informe os dados" : "Edite os dados"}
                     </DialogDescription>
                 </DialogHeader>
-                        <form onSubmit={handleFormsPeople}>
                 <DialogFooter>
                     <div className="flex flex-col gap-2 w-full">
                             <Label>Nome</Label>
@@ -77,7 +75,11 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
                                 required
                             />
 
-                            <Button type="submit">{mode === 'create' ? "Cadastrar" : "Editar"}</Button>
+                            <Button
+                                onClick={handleFormsPeople}
+                            >
+                                {mode === 'create' ? "Cadastrar" : "Editar"}
+                            </Button>
                             <Button
                                 variant={'outline'}
                                 onClick={onOpenChange}
@@ -87,7 +89,6 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
 
                     </div>
                 </DialogFooter>
-                        </form>
             </DialogContent>
         </Dialog>
     )

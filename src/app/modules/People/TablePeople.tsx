@@ -8,46 +8,8 @@ import { useEffect, useState } from "react";
 import { People } from "./types";
 import ModalDeletePeople from "./ModalDeletePeople";
 import ModalFormsPeople from "./ModalFormsPeople";
-
-
-const data: People[] =
-    [
-        {
-            "id": 1,
-            "name": "Marcos Alves",
-            "number": "(14) 99745-0952"
-        },
-        {
-            "id": 2,
-            "name": "Maria Julia Mattos",
-            "number": "(14) 99765-1267"
-        },
-        {
-            "id": 3,
-            "name": "Pedro Mancuso",
-            "number": "(14) 99778-3356"
-        },
-        {
-            "id": 4,
-            "name": "Maikhel Perez",
-            "number": "(14) 99744-4040"
-        },
-        {
-            "id": 5,
-            "name": "Edy Carlos",
-            "number": "(14) 99722-1329"
-        },
-        {
-            "id": 6,
-            "name": "Rafael Ribeiro Castro",
-            "number": "(14) 99734-0999"
-        },
-        {
-            "id": 7,
-            "name": "Eloísa Santos",
-            "number": "(14) 99745-0332"
-        }
-    ]
+import { getPeopleServices } from "./People.services";
+import { responseApiRouteType } from "@/lib/types";
 
 
 export default function TablePeople() {
@@ -63,7 +25,10 @@ export default function TablePeople() {
 
 
     async function getPeople() {
-        setPeople(data)
+        const response: responseApiRouteType = await getPeopleServices()
+        if (response.request_ok) {
+            setPeople(response.response as People[])
+        }
     }
 
     function openModalf(person: People) {
