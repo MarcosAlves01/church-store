@@ -8,8 +8,9 @@ import { useEffect, useState } from "react";
 import { People } from "./types";
 import ModalDeletePeople from "./ModalDeletePeople";
 import ModalFormsPeople from "./ModalFormsPeople";
-import { getPeopleServices } from "./People.services";
+import { deletePeopleServices, getPeopleServices } from "./People.services";
 import { responseApiRouteType } from "@/lib/types";
+import { toast } from "sonner";
 
 
 export default function TablePeople() {
@@ -42,7 +43,12 @@ export default function TablePeople() {
     }
 
     async function deletePerson() {
-        console.log("deletando pessoa com id: ", openModalDelete.id)
+        const response: responseApiRouteType = await deletePeopleServices(openModalDelete.id.toString())
+        if (response.request_ok) {
+            toast.success("Pessoa deletada com sucesso")
+            setOpenModal(false)
+            getPeople()
+        }
     }
 
     useEffect(() => {

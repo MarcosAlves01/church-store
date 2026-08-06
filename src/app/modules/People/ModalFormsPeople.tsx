@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { People } from "./types";
 import { useEffect, useState } from "react";
+import { createPeopleServices } from "./People.services";
+import { responseApiRouteType } from "@/lib/types";
+import { toast } from "sonner";
 
 
 type FormsPeople = {
@@ -26,11 +29,21 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
 
 
     async function handleFormsPeople() {
+        let response: responseApiRouteType
         if (!name || !number) {
-            alert("Preencha todos os campos")
+            toast.error("Preencha todos os campos")
+            return
         }
-        if (mode === 'create') console.log("Criou:", name, number)
-        if (mode === 'edit') console.log("Editou:", name, number)
+        if (mode === 'create') {
+            response = await createPeopleServices(name, number)
+            if (response.request_ok) {
+                toast.success("Pessoa cadastrada com sucesso")
+                onOpenChange()
+            }
+        }
+        if (mode === 'edit') {
+            console.log("editar pessoa")
+        }
     }
 
     useEffect(() => {
@@ -65,14 +78,12 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
                                 placeholder="Digite o nome..."
                                 value={name}
                                 onChange={(e) => { setName(e.target.value) }}
-                                required
                             />
                             <Label>Número</Label>
                             <Input
                                 placeholder="(14) 99999-9999"
                                 value={number}
                                 onChange={(e) => setNumber(e.target.value)}
-                                required
                             />
 
                             <Button
