@@ -15,8 +15,8 @@ import { toast } from "sonner";
 
 export default function TablePeople() {
     const [people, setPeople] = useState<People[]>([])
-    const [openModalDelete, setOpenModalDelete] = useState({
-        id: 0,
+    const [openModalDelete, setOpenModalDelete] = useState<{ id: string; name: string }>({
+        id: "",
         name: ""
     })
     const [openModal, setOpenModal] = useState(false)

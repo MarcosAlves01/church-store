@@ -1,4 +1,4 @@
-import { createPeopleRepository, deletePeopleRepository, getPeopleRepository } from "./People.repository";
+import { createPeopleRepository, deletePeopleRepository, getPeopleRepository, updatePeopleRepository } from "./People.repository";
 
 
 export async function getPeopleServices() {
@@ -11,4 +11,8 @@ export async function createPeopleServices(name: string, number: string) {
 
 export async function deletePeopleServices(idPeople: string) {
     return await deletePeopleRepository(idPeople)
+}
+
+export async function updatePeopleServices(idPeople: string, name: string, number: string) {
+    return await updatePeopleRepository(idPeople, name, number)
 }

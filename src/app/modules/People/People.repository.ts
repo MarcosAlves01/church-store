@@ -47,3 +47,23 @@ export async function deletePeopleRepository(idPeople: string) {
         return ResponseGenericApiRoute(errorMessage)
     }
 }
+
+export async function updatePeopleRepository(idPeople: string, name: string, number: string) {
+    const errorMessage = "Ocorreu um erro ao atualizar a pessoa"
+    try {
+        const response = await fetch(`/api/people/${idPeople}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                number
+            })
+        })
+        const data = await response.json()
+        return data
+    } catch {
+        return ResponseGenericApiRoute(errorMessage)
+    }
+}

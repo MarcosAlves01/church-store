@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { People } from "./types";
 import { useEffect, useState } from "react";
-import { createPeopleServices } from "./People.services";
+import { createPeopleServices, updatePeopleServices } from "./People.services";
 import { responseApiRouteType } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -42,7 +42,11 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
             }
         }
         if (mode === 'edit') {
-            console.log("editar pessoa")
+            response = await updatePeopleServices(people?.id || "", name, number)
+            if (response.request_ok) {
+                toast.success("Pessoa atualizada com sucesso")
+                onOpenChange()
+            }
         }
     }
 
@@ -73,30 +77,30 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
                 </DialogHeader>
                 <DialogFooter>
                     <div className="flex flex-col gap-2 w-full">
-                            <Label>Nome</Label>
-                            <Input
-                                placeholder="Digite o nome..."
-                                value={name}
-                                onChange={(e) => { setName(e.target.value) }}
-                            />
-                            <Label>Número</Label>
-                            <Input
-                                placeholder="(14) 99999-9999"
-                                value={number}
-                                onChange={(e) => setNumber(e.target.value)}
-                            />
+                        <Label>Nome</Label>
+                        <Input
+                            placeholder="Digite o nome..."
+                            value={name}
+                            onChange={(e) => { setName(e.target.value) }}
+                        />
+                        <Label>Número</Label>
+                        <Input
+                            placeholder="(14) 99999-9999"
+                            value={number}
+                            onChange={(e) => setNumber(e.target.value)}
+                        />
 
-                            <Button
-                                onClick={handleFormsPeople}
-                            >
-                                {mode === 'create' ? "Cadastrar" : "Editar"}
-                            </Button>
-                            <Button
-                                variant={'outline'}
-                                onClick={onOpenChange}
-                            >
-                                Cancelar
-                            </Button>
+                        <Button
+                            onClick={handleFormsPeople}
+                        >
+                            {mode === 'create' ? "Cadastrar" : "Editar"}
+                        </Button>
+                        <Button
+                            variant={'outline'}
+                            onClick={onOpenChange}
+                        >
+                            Cancelar
+                        </Button>
 
                     </div>
                 </DialogFooter>
