@@ -9,6 +9,7 @@ import { useState } from "react";
 
 export default function People() {
     const [openRegisterPeople, setOpenRegisterPeople] = useState(false)
+    const [refreshTable, setRefreshTable] = useState(false)
 
     return (
         <Card>
@@ -30,12 +31,13 @@ export default function People() {
 
             </CardHeader>
             <CardContent>
-                <TablePeople />
+                <TablePeople refreshTable={refreshTable} setRefreshTable={setRefreshTable} />
             </CardContent>
             <ModalFormsPeople 
                 mode="create"
                 open={openRegisterPeople}
                 onOpenChange={() => setOpenRegisterPeople(false)}
+                setRefreshTable={setRefreshTable}
             />
         </Card>
     )

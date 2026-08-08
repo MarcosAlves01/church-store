@@ -12,8 +12,12 @@ import { deletePeopleServices, getPeopleServices } from "./People.services";
 import { responseApiRouteType } from "@/lib/types";
 import { toast } from "sonner";
 
+type TablePeopleProps = {
+    refreshTable: boolean;
+    setRefreshTable: (value: boolean) => void;
+}
 
-export default function TablePeople() {
+export default function TablePeople({ refreshTable, setRefreshTable }: TablePeopleProps) {
     const [people, setPeople] = useState<People[]>([])
     const [openModalDelete, setOpenModalDelete] = useState<{ id: string; name: string }>({
         id: "",
@@ -55,6 +59,14 @@ export default function TablePeople() {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         getPeople()
     }, [])
+
+    useEffect(() => {
+        if (refreshTable) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            getPeople()
+            setRefreshTable(false)
+        }
+    }, [refreshTable])
 
     return (
         <div className="flex flex-col gap-2">
@@ -108,11 +120,12 @@ export default function TablePeople() {
                 personName={openModalDelete.name}
                 onChange={deletePerson}
             />
-            <ModalFormsPeople 
+            <ModalFormsPeople
                 mode="edit"
                 open={openModalEditPeople}
                 onOpenChange={() => setOpenModalEditPeople(false)}
                 people={dataEditPeople}
+                setRefreshTable={setRefreshTable}
             />
         </div>
     )

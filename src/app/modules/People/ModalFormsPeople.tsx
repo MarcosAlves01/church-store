@@ -21,9 +21,10 @@ type FormsPeople = {
     open: boolean;
     onOpenChange: () => void
     people?: People
+    setRefreshTable: (refresh: boolean) => void
 }
 
-export default function ModalFormsPeople({ mode, open, onOpenChange, people }: FormsPeople) {
+export default function ModalFormsPeople({ mode, open, onOpenChange, people, setRefreshTable }: FormsPeople) {
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
 
@@ -38,6 +39,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
             response = await createPeopleServices(name, number)
             if (response.request_ok) {
                 toast.success("Pessoa cadastrada com sucesso")
+                setRefreshTable(true)
                 onOpenChange()
             }
         }
@@ -45,6 +47,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people }: F
             response = await updatePeopleServices(people?.id || "", name, number)
             if (response.request_ok) {
                 toast.success("Pessoa atualizada com sucesso")
+                setRefreshTable(true)
                 onOpenChange()
             }
         }
