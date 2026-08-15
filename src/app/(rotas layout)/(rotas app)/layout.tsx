@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/SideBar";
+import { ModeToggle } from "@/components/theme/ToggleMode";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { Separator } from "@base-ui/react/separator";
@@ -13,8 +14,9 @@ export default function AppLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex items-center gap-2 border-b px-4">
+        <header className="flex items-center justify-between gap-2 border-b px-4">
           <SidebarTrigger />
+          <ModeToggle />
         </header>
         <main className="p-2">
           <Separator />
