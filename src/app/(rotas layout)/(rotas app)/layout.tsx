@@ -2,7 +2,7 @@ import { AppSidebar } from "@/components/SideBar";
 import { ModeToggle } from "@/components/theme/ToggleMode";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { Separator } from "@base-ui/react/separator";
+import { Separator } from "@/components/ui/separator";
 
 
 export default function AppLayout({
