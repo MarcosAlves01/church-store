@@ -2,7 +2,6 @@ import { AppSidebar } from "@/components/SideBar";
 import { ModeToggle } from "@/components/theme/ToggleMode";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { Separator } from "@base-ui/react/separator";
 
 
 export default function AppLayout({
@@ -19,7 +18,6 @@ export default function AppLayout({
           <ModeToggle />
         </header>
         <main className="p-2">
-          <Separator />
           {children}
         </main>
         <Toaster richColors theme="light" position="top-center" />
