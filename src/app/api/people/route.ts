@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const { name, number } = await req.json()
+    const { nome, telefone } = await req.json()
     try {
         const response = await mockAPI('/people', {
             method: 'POST',
@@ -26,8 +26,8 @@ export async function POST(req: NextRequest) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name,
-                number
+                nome,
+                telefone
             })
         })
         const data = await response.json()

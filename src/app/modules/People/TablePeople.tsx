@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PenBoxIcon, Search, Trash2 } from "lucide-react";
+import { Check, PenBoxIcon, Search, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { People } from "./types";
 import ModalDeletePeople from "./ModalDeletePeople";
@@ -11,6 +11,7 @@ import ModalFormsPeople from "./ModalFormsPeople";
 import { deletePeopleServices, getPeopleServices } from "./People.services";
 import { responseApiRouteType } from "@/lib/types";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 type TablePeopleProps = {
     refreshTable: boolean;
@@ -19,6 +20,7 @@ type TablePeopleProps = {
 
 export default function TablePeople({ refreshTable, setRefreshTable }: TablePeopleProps) {
     const [people, setPeople] = useState<People[]>([])
+    const [search, setSearch] = useState("")
     const [openModalDelete, setOpenModalDelete] = useState<{ id: string; name: string }>({
         id: "",
         name: ""
@@ -26,18 +28,20 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
     const [openModal, setOpenModal] = useState(false)
     const [openModalEditPeople, setOpenModalEditPeople] = useState(false)
     const [dataEditPeople, setDataEditPeople] = useState<People>()
-
+    const [loadingGetPeoples, setLoadingGetPeoples] = useState(false)
 
 
     async function getPeople() {
+        setLoadingGetPeoples(true)
         const response: responseApiRouteType = await getPeopleServices()
         if (response.request_ok) {
             setPeople(response.response as People[])
         }
+        setLoadingGetPeoples(false)
     }
 
     function openModalf(person: People) {
-        setOpenModalDelete(person)
+        setOpenModalDelete({ id: person.id, name: person.nome })
         setOpenModal(true)
     }
 
@@ -68,11 +72,25 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
         }
     }, [refreshTable])
 
+    const filteredPeople = people.filter((person) =>
+        person.nome.toLowerCase().includes(search.toLowerCase())
+    )
+
+    if (loadingGetPeoples) {
+        return (
+            <div className="w-full h-60 flex items-center justify-center border rounded-lg p-2">
+                <Spinner />
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col gap-2">
             <div className="flex gap-2 sm:max-w-[40%]">
                 <Input
                     placeholder="Procure uma pessoa..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <Button>
                     <Search /> Buscar
@@ -84,14 +102,28 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
                         <TableRow>
                             <TableHead>Nome</TableHead>
                             <TableHead>Número</TableHead>
+                            <TableHead>Pago</TableHead>
                             <TableHead>Ações</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {people.map((person) => (
+                        {filteredPeople.map((person) => (
                             <TableRow key={person.id}>
-                                <TableCell>{person.name}</TableCell>
-                                <TableCell>{person.number}</TableCell>
+                                <TableCell>{person.nome}</TableCell>
+                                <TableCell>{person.telefone}</TableCell>
+                                <TableCell>
+                                    {person.pago ? (
+                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-xs font-medium text-green-500">
+                                            <Check className="size-3.5" />
+                                            Pago
+                                        </span>
+                                    ) : (
+                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-500">
+                                            <X className="size-3.5" />
+                                            Pendente
+                                        </span>
+                                    )}
+                                </TableCell>
                                 <TableCell>
                                     <div className="flex gap-2 items-center">
                                         <Button

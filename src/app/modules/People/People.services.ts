@@ -5,14 +5,14 @@ export async function getPeopleServices() {
     return await getPeopleRepository()
 }
 
-export async function createPeopleServices(name: string, number: string) {
-    return await createPeopleRepository(name, number)
+export async function createPeopleServices(nome: string, telefone: string) {
+    return await createPeopleRepository(nome, telefone)
 }
 
 export async function deletePeopleServices(idPeople: string) {
     return await deletePeopleRepository(idPeople)
 }
 
-export async function updatePeopleServices(idPeople: string, name: string, number: string) {
-    return await updatePeopleRepository(idPeople, name, number)
+export async function updatePeopleServices(idPeople: string, nome: string, telefone: string, pago: boolean) {
+    return await updatePeopleRepository(idPeople, nome, telefone, pago)
 }

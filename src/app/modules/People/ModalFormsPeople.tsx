@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { People } from "./types";
 import { useEffect, useState } from "react";
 import { createPeopleServices, updatePeopleServices } from "./People.services";
@@ -26,17 +27,18 @@ type FormsPeople = {
 
 export default function ModalFormsPeople({ mode, open, onOpenChange, people, setRefreshTable }: FormsPeople) {
     const [name, setName] = useState("")
-    const [number, setNumber] = useState("")
+    const [phone, setPhone] = useState("")
+    const [paid, setPaid] = useState(false)
 
 
     async function handleFormsPeople() {
         let response: responseApiRouteType
-        if (!name || !number) {
+        if (!name || !phone) {
             toast.error("Preencha todos os campos")
             return
         }
         if (mode === 'create') {
-            response = await createPeopleServices(name, number)
+            response = await createPeopleServices(name, phone)
             if (response.request_ok) {
                 toast.success("Pessoa cadastrada com sucesso")
                 setRefreshTable(true)
@@ -44,7 +46,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
             }
         }
         if (mode === 'edit') {
-            response = await updatePeopleServices(people?.id || "", name, number)
+            response = await updatePeopleServices(people?.id || "", name, phone, paid)
             if (response.request_ok) {
                 toast.success("Pessoa atualizada com sucesso")
                 setRefreshTable(true)
@@ -58,13 +60,15 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
 
         if (mode === "edit" && people) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
-            setName(people.name)
-            setNumber(people.number)
+            setName(people.nome)
+            setPhone(people.telefone || "")
+            setPaid(people.pago)
         }
 
         if (mode === "create") {
             setName("")
-            setNumber("")
+            setPhone("")
+            setPaid(false)
         }
     }, [open, mode, people])
 
@@ -89,9 +93,19 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
                         <Label>Número</Label>
                         <Input
                             placeholder="(14) 99999-9999"
-                            value={number}
-                            onChange={(e) => setNumber(e.target.value)}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                         />
+
+                        {mode === "edit" && (
+                            <div className="flex items-center gap-2 mt-1">
+                                <Switch
+                                    checked={paid}
+                                    onCheckedChange={setPaid}
+                                />
+                                <Label>Pago</Label>
+                            </div>
+                        )}
 
                         <Button
                             onClick={handleFormsPeople}

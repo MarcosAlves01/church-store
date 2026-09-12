@@ -12,7 +12,7 @@ export async function getPeopleRepository() {
     }
 }
 
-export async function createPeopleRepository(name: string, number: string) {
+export async function createPeopleRepository(nome: string, telefone: string) {
     const errorMessage = "Ocorreu um erro ao cadastrar a pessoa"
     try {
         const response = await fetch('/api/people', {
@@ -21,8 +21,8 @@ export async function createPeopleRepository(name: string, number: string) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name,
-                number
+                nome,
+                telefone
             })
         })
         const data = await response.json()
@@ -48,17 +48,18 @@ export async function deletePeopleRepository(idPeople: string) {
     }
 }
 
-export async function updatePeopleRepository(idPeople: string, name: string, number: string) {
+export async function updatePeopleRepository(idPeople: string, nome: string, telefone: string, pago: boolean) {
     const errorMessage = "Ocorreu um erro ao atualizar a pessoa"
     try {
         const response = await fetch(`/api/people/${idPeople}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name,
-                number
+                nome,
+                telefone,
+                pago
             })
         })
         const data = await response.json()

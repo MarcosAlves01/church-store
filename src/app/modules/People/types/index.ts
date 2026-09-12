@@ -1,5 +1,6 @@
 export type People = {
     id: string,
-    name: string,
-    number: string
+    nome: string,
+    telefone: string | null,
+    pago: boolean
 }
