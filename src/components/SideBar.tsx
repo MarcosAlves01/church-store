@@ -6,6 +6,7 @@ import {
     UsersIcon,
     LucideStore,
     PiggyBankIcon,
+    ClipboardListIcon,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import {
@@ -38,6 +39,11 @@ const menuItems = [
         title: "Vender",
         icon: PiggyBankIcon,
         href: "/sell"
+    },
+    {
+        title: "Resumo",
+        icon: ClipboardListIcon,
+        href: "/summary"
     }
 ]
 
