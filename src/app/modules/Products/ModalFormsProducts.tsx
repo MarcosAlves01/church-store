@@ -10,6 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Package } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { Products } from "./types";
 import { useEffect, useState } from "react";
 import { createProductsServices, updateProductsServices } from "./Products.services";
@@ -29,6 +31,7 @@ export default function ModalFormsProducts({ mode, open, onOpenChange, product, 
     const [name, setName] = useState("")
     const [price, setPrice] = useState("")
     const [active, setActive] = useState(true)
+    const [loadingForms, setLoadingForms] = useState(false)
 
 
     async function handleFormsProducts() {
@@ -44,6 +47,7 @@ export default function ModalFormsProducts({ mode, open, onOpenChange, product, 
             return
         }
 
+        setLoadingForms(true)
         if (mode === 'create') {
             response = await createProductsServices(name, priceInCents)
             if (response.request_ok) {
@@ -60,6 +64,7 @@ export default function ModalFormsProducts({ mode, open, onOpenChange, product, 
                 onOpenChange()
             }
         }
+        setLoadingForms(false)
     }
 
     useEffect(() => {
@@ -105,23 +110,27 @@ export default function ModalFormsProducts({ mode, open, onOpenChange, product, 
                         />
 
                         {mode === "edit" && (
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-2 mt-1 border p-3 rounded-lg justify-between">
+                                <Label>
+                                    <Package opacity={80} /> Ativo
+                                </Label>
                                 <Switch
                                     checked={active}
                                     onCheckedChange={setActive}
                                 />
-                                <Label>Ativo</Label>
                             </div>
                         )}
 
                         <Button
                             onClick={handleFormsProducts}
+                            disabled={loadingForms}
                         >
-                            {mode === 'create' ? "Cadastrar" : "Editar"}
+                            {loadingForms ? <Spinner /> : mode === 'create' ? "Cadastrar" : "Editar"}
                         </Button>
                         <Button
                             variant={'outline'}
                             onClick={onOpenChange}
+                            disabled={loadingForms}
                         >
                             Cancelar
                         </Button>

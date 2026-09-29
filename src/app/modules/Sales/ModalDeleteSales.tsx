@@ -7,15 +7,17 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 
 type ModalDeleteSalesProps = {
     open: boolean;
     onOpenChange: () => void;
     saleName: string;
     onChange: () => void;
+    loading?: boolean;
 }
 
-export default function ModalDeleteSales({ open, onOpenChange, saleName, onChange }: ModalDeleteSalesProps) {
+export default function ModalDeleteSales({ open, onOpenChange, saleName, onChange, loading }: ModalDeleteSalesProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,8 +36,9 @@ export default function ModalDeleteSales({ open, onOpenChange, saleName, onChang
                         <Button
                             variant="destructive"
                             onClick={onChange}
+                            disabled={loading}
                         >
-                            Excluir
+                            {loading ? <Spinner /> : "Excluir"}
                         </Button>
                     </div>
                 </DialogFooter>

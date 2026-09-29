@@ -20,9 +20,9 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { Separator } from "./ui/separator"
 
 const menuItems = [
     {
@@ -49,14 +49,22 @@ const menuItems = [
 
 export function AppSidebar() {
     const pathname = usePathname()
+    const { state } = useSidebar()
+    const isCollapsed = state === "collapsed"
 
 
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarContent>
                 <SidebarHeader className="p-4">
-                    <div className="flex items-center gap-3">
-                        <span className="text-lg font-bold">LOJINHA</span>
+                    <div className={`flex items-center gap-3 ${isCollapsed && "justify-center"}`}>
+                        {isCollapsed ? (
+                            <span className="flex size-8 p-6 items-center justify-center rounded-lg bg-primary text-md font-bold text-primary-foreground">
+                                EGA
+                            </span>
+                        ) : (
+                            <span className="text-lg font-bold">LOJINHA - EGA</span>
+                        )}
                     </div>
                 </SidebarHeader>
                 <SidebarGroup>

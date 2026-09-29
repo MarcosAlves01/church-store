@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import { createPeopleServices, updatePeopleServices } from "./People.services";
 import { responseApiRouteType } from "@/lib/types";
 import { toast } from "sonner";
+import { CreditCard } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 
 type FormsPeople = {
@@ -29,6 +31,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
     const [name, setName] = useState("")
     const [phone, setPhone] = useState("")
     const [paid, setPaid] = useState(false)
+    const [loadingForms, setLoadingForms] = useState(false)
 
 
     async function handleFormsPeople() {
@@ -37,6 +40,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
             toast.error("Preencha todos os campos")
             return
         }
+        setLoadingForms(true)
         if (mode === 'create') {
             response = await createPeopleServices(name, phone)
             if (response.request_ok) {
@@ -53,6 +57,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
                 onOpenChange()
             }
         }
+        setLoadingForms(false)
     }
 
     useEffect(() => {
@@ -98,23 +103,28 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
                         />
 
                         {mode === "edit" && (
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-2 mt-1 border p-3 rounded-lg justify-between">
+                                <Label>
+                                    <CreditCard opacity={80} /> Pago
+                                </Label>
+
                                 <Switch
                                     checked={paid}
                                     onCheckedChange={setPaid}
                                 />
-                                <Label>Pago</Label>
                             </div>
                         )}
 
                         <Button
                             onClick={handleFormsPeople}
+                            disabled={loadingForms}
                         >
-                            {mode === 'create' ? "Cadastrar" : "Editar"}
+                            {loadingForms ? <Spinner /> : mode === 'create' ? "Cadastrar" : "Editar"}
                         </Button>
                         <Button
                             variant={'outline'}
                             onClick={onOpenChange}
+                            disabled={loadingForms}
                         >
                             Cancelar
                         </Button>

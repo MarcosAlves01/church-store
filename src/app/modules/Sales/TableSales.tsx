@@ -40,6 +40,7 @@ export default function TableSales({ refreshTable, setRefreshTable }: TableSales
     })
     const [openModal, setOpenModal] = useState(false)
     const [loadingGetSales, setLoadingGetSales] = useState(false)
+    const [loadingDelete, setLoadingDelete] = useState(false)
 
 
     async function getSales() {
@@ -57,12 +58,14 @@ export default function TableSales({ refreshTable, setRefreshTable }: TableSales
     }
 
     async function deleteSale() {
+        setLoadingDelete(true)
         const response: responseApiRouteType = await deleteSalesServices(openModalDelete.id.toString())
         if (response.request_ok) {
             toast.success("Venda deletada com sucesso")
             setOpenModal(false)
             getSales()
         }
+        setLoadingDelete(false)
     }
 
     useEffect(() => {
@@ -144,6 +147,7 @@ export default function TableSales({ refreshTable, setRefreshTable }: TableSales
                 open={openModal}
                 saleName={openModalDelete.name}
                 onChange={deleteSale}
+                loading={loadingDelete}
             />
         </div>
     )

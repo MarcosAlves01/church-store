@@ -16,6 +16,8 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import { Minus, Plus } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
 import { createSalesServices } from "./Sales.services";
 import { getPeopleServices } from "../People/People.services";
@@ -37,6 +39,7 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
     const [personId, setPersonId] = useState<string | null>(null)
     const [productId, setProductId] = useState<string | null>(null)
     const [quantity, setQuantity] = useState("1")
+    const [loadingForms, setLoadingForms] = useState(false)
 
 
     async function loadOptions() {
@@ -63,12 +66,14 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
             return
         }
 
+        setLoadingForms(true)
         const response: responseApiRouteType = await createSalesServices(personId, productId, quantityNumber)
         if (response.request_ok) {
             toast.success("Venda registrada com sucesso")
             setRefreshTable(true)
             onOpenChange()
         }
+        setLoadingForms(false)
     }
 
     useEffect(() => {
@@ -96,7 +101,10 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
                     <Select value={personId} onValueChange={setPersonId}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione uma pessoa...">
-                                {(value) => people.find((person) => person.id === value)?.nome}
+                                {(value) =>
+                                    people.find((person) => person.id === value)?.nome ??
+                                    "Selecione uma pessoa..."
+                                }
                             </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
@@ -112,7 +120,10 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
                     <Select value={productId} onValueChange={setProductId}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione um produto...">
-                                {(value) => products.find((product) => product.id === value)?.nome}
+                                {(value) =>
+                                    products.find((product) => product.id === value)?.nome ??
+                                    "Selecione um produto..."
+                                }
                             </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
@@ -125,25 +136,46 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
                     </Select>
 
                     <Label>Quantidade</Label>
-                    <Input
-                        type="number"
-                        min={1}
-                        placeholder="1"
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                    />
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant={'outline'}
+                            size={'icon'}
+                            onClick={() => setQuantity((prev) => String(Math.max(1, Number(prev) - 1)))}
+                        >
+                            <Minus />
+                        </Button>
+                        <Input
+                            type="number"
+                            min={1}
+                            placeholder="1"
+                            className="text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                        />
+                        <Button
+                            type="button"
+                            variant={'outline'}
+                            size={'icon'}
+                            onClick={() => setQuantity((prev) => String(Number(prev) + 1))}
+                        >
+                            <Plus />
+                        </Button>
+                    </div>
                 </div>
                 <DialogFooter>
                     <Button
                         variant={'outline'}
                         onClick={onOpenChange}
+                        disabled={loadingForms}
                     >
                         Cancelar
                     </Button>
                     <Button
                         onClick={handleFormsSales}
+                        disabled={loadingForms}
                     >
-                        Registrar
+                        {loadingForms ? <Spinner /> : "Registrar"}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -29,6 +29,7 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
     const [openModalEditPeople, setOpenModalEditPeople] = useState(false)
     const [dataEditPeople, setDataEditPeople] = useState<People>()
     const [loadingGetPeoples, setLoadingGetPeoples] = useState(false)
+    const [loadingDelete, setLoadingDelete] = useState(false)
 
 
     async function getPeople() {
@@ -51,12 +52,14 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
     }
 
     async function deletePerson() {
+        setLoadingDelete(true)
         const response: responseApiRouteType = await deletePeopleServices(openModalDelete.id.toString())
         if (response.request_ok) {
             toast.success("Pessoa deletada com sucesso")
             setOpenModal(false)
             getPeople()
         }
+        setLoadingDelete(false)
     }
 
     useEffect(() => {
@@ -151,6 +154,7 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
                 open={openModal}
                 personName={openModalDelete.name}
                 onChange={deletePerson}
+                loading={loadingDelete}
             />
             <ModalFormsPeople
                 mode="edit"

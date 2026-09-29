@@ -43,6 +43,7 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
     const [openModalEditProduct, setOpenModalEditProduct] = useState(false)
     const [dataEditProduct, setDataEditProduct] = useState<Products>()
     const [loadingGetProducts, setLoadingGetProducts] = useState(false)
+    const [loadingDelete, setLoadingDelete] = useState(false)
 
 
     async function getProducts() {
@@ -65,12 +66,14 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
     }
 
     async function deleteProduct() {
+        setLoadingDelete(true)
         const response: responseApiRouteType = await deleteProductsServices(openModalDelete.id.toString())
         if (response.request_ok) {
             toast.success("Produto deletado com sucesso")
             setOpenModal(false)
             getProducts()
         }
+        setLoadingDelete(false)
     }
 
     useEffect(() => {
@@ -151,6 +154,7 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
                 open={openModal}
                 productName={openModalDelete.name}
                 onChange={deleteProduct}
+                loading={loadingDelete}
             />
             <ModalFormsProducts
                 mode="edit"
