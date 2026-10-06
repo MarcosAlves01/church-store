@@ -1,5 +1,5 @@
 export type People = {
-    id: string,
+    id: number,
     nome: string,
     telefone: string | null,
     pago: boolean

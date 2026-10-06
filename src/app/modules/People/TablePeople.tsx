@@ -28,7 +28,7 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
     const [openModal, setOpenModal] = useState(false)
     const [openModalEditPeople, setOpenModalEditPeople] = useState(false)
     const [dataEditPeople, setDataEditPeople] = useState<People>()
-    const [loadingGetPeoples, setLoadingGetPeoples] = useState(false)
+    const [loadingGetPeoples, setLoadingGetPeoples] = useState(true)
     const [loadingDelete, setLoadingDelete] = useState(false)
 
 
@@ -36,13 +36,14 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
         setLoadingGetPeoples(true)
         const response: responseApiRouteType = await getPeopleServices()
         if (response.request_ok) {
-            setPeople(response.response as People[])
+            const data = response.response as People[]
+            setPeople(Array.isArray(data) ? data : [])
         }
         setLoadingGetPeoples(false)
     }
 
     function openModalf(person: People) {
-        setOpenModalDelete({ id: person.id, name: person.nome })
+        setOpenModalDelete({ id: String(person.id), name: person.nome })
         setOpenModal(true)
     }
 
@@ -110,7 +111,14 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredPeople.map((person) => (
+                        {!loadingGetPeoples && filteredPeople.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                                    Não há pessoas para exibir
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                        filteredPeople.map((person) => (
                             <TableRow key={person.id}>
                                 <TableCell>{person.nome}</TableCell>
                                 <TableCell>{person.telefone}</TableCell>
@@ -145,7 +153,8 @@ export default function TablePeople({ refreshTable, setRefreshTable }: TablePeop
                                     </div>
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ))
+                        )}
                     </TableBody>
                 </Table>
             </div>

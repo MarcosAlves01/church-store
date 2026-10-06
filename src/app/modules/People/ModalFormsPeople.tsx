@@ -50,7 +50,7 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
             }
         }
         if (mode === 'edit') {
-            response = await updatePeopleServices(people?.id || "", name, phone, paid)
+            response = await updatePeopleServices(String(people?.id ?? ""), name, phone, paid)
             if (response.request_ok) {
                 toast.success("Pessoa atualizada com sucesso")
                 setRefreshTable(true)
