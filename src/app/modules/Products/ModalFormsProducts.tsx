@@ -57,7 +57,7 @@ export default function ModalFormsProducts({ mode, open, onOpenChange, product, 
             }
         }
         if (mode === 'edit') {
-            response = await updateProductsServices(product?.id || "", name, priceInCents, active)
+            response = await updateProductsServices(String(product?.id ?? ""), name, priceInCents, active)
             if (response.request_ok) {
                 toast.success("Produto atualizado com sucesso")
                 setRefreshTable(true)

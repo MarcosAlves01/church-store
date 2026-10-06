@@ -42,7 +42,7 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
     const [openModal, setOpenModal] = useState(false)
     const [openModalEditProduct, setOpenModalEditProduct] = useState(false)
     const [dataEditProduct, setDataEditProduct] = useState<Products>()
-    const [loadingGetProducts, setLoadingGetProducts] = useState(false)
+    const [loadingGetProducts, setLoadingGetProducts] = useState(true)
     const [loadingDelete, setLoadingDelete] = useState(false)
 
 
@@ -50,13 +50,14 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
         setLoadingGetProducts(true)
         const response: responseApiRouteType = await getProductsServices()
         if (response.request_ok) {
-            setProducts(response.response as Products[])
+            const data = response.response as Products[]
+            setProducts(Array.isArray(data) ? data : [])
         }
         setLoadingGetProducts(false)
     }
 
     function openModalf(product: Products) {
-        setOpenModalDelete({ id: product.id, name: product.nome })
+        setOpenModalDelete({ id: String(product.id), name: product.nome })
         setOpenModal(true)
     }
 
@@ -123,7 +124,14 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {!loadingGetProducts && filteredProducts.map((product) => (
+                        {filteredProducts.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                                    Não há produtos para exibir
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                        filteredProducts.map((product) => (
                             <TableRow key={product.id}>
                                 <TableCell>{product.nome}</TableCell>
                                 <TableCell>{formatPrice(product.preco)}</TableCell>
@@ -145,7 +153,8 @@ export default function TableProducts({ refreshTable, setRefreshTable }: TablePr
                                     </div>
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ))
+                        )}
                     </TableBody>
                 </Table>
             </div>
