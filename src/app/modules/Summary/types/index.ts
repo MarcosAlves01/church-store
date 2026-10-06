@@ -1,8 +1,9 @@
-export type SummaryItem = {
-    pessoaId: string,
-    nome: string,
-    pago: boolean,
-    total: number
+export type SummaryData = {
+    totalPessoas: number,
+    totalProdutos: number,
+    totalVendas: number,
+    pessoasPagas: number,
+    produtosAtivos: number,
+    faturamentoTotal: number,
+    valorMedioPorVenda: number
 }
-
-export type StatusFilter = "todos" | "pagos" | "pendentes"
