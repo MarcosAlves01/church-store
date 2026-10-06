@@ -26,23 +26,28 @@ export async function POST(req: NextRequest) {
 
             responseToken.cookies.set("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV == "production",
-                sameSite: "strict",
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
                 path: '/',
                 maxAge: 60 * 60 * 8
             })
+
             return responseToken
         }
 
         return NextResponse.json({
             request_ok: false,
-        })
-    } catch {
-        return NextResponse.json({
-            request_ok: false,
             error: "Credenciais inválidas"
         }, {
-            status: 400
+            status: response.status
+        })
+    } catch (err) {
+        console.error("[/api/auth/login] erro ao chamar a API:", err)
+        return NextResponse.json({
+            request_ok: false,
+            error: "Não foi possível entrar"
+        }, {
+            status: 500
         })
     }
 }
