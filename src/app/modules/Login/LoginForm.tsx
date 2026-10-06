@@ -69,7 +69,7 @@ export default function LoginForm() {
                             placeholder="Digite sua senha..."
                             onChange={(e) => setForm({ ...form, senha: e.target.value })}
                         />
-                        <button onClick={visiblePassword} className="absolute mr-4 cursor-pointer text-zinc-300">
+                        <button type="button" onClick={visiblePassword} className="absolute mr-4 cursor-pointer text-zinc-300">
                             {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                         </button>
                     </div>
