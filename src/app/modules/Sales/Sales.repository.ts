@@ -12,7 +12,7 @@ export async function getSalesRepository() {
     }
 }
 
-export async function createSalesRepository(pessoaId: string, produtoId: string, quantidade: number) {
+export async function createSalesRepository(pessoaId: number, produtoId: number, quantidade: number, precoNaHora: number) {
     const messageError = "Ocorreu um erro ao registrar a venda"
     try {
         const response = await fetch('/api/sales', {
@@ -23,7 +23,8 @@ export async function createSalesRepository(pessoaId: string, produtoId: string,
             body: JSON.stringify({
                 pessoaId,
                 produtoId,
-                quantidade
+                quantidade,
+                precoNaHora
             })
         })
         const data = await response.json()

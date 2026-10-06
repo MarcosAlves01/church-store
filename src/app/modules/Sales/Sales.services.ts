@@ -5,8 +5,8 @@ export async function getSalesServices() {
     return await getSalesRepository()
 }
 
-export async function createSalesServices(pessoaId: string, produtoId: string, quantidade: number) {
-    return await createSalesRepository(pessoaId, produtoId, quantidade)
+export async function createSalesServices(pessoaId: number, produtoId: number, quantidade: number, precoNaHora: number) {
+    return await createSalesRepository(pessoaId, produtoId, quantidade, precoNaHora)
 }
 
 export async function deleteSalesServices(idSale: string) {

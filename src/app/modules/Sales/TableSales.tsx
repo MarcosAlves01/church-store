@@ -39,7 +39,7 @@ export default function TableSales({ refreshTable, setRefreshTable }: TableSales
         name: ""
     })
     const [openModal, setOpenModal] = useState(false)
-    const [loadingGetSales, setLoadingGetSales] = useState(false)
+    const [loadingGetSales, setLoadingGetSales] = useState(true)
     const [loadingDelete, setLoadingDelete] = useState(false)
 
 
@@ -47,13 +47,14 @@ export default function TableSales({ refreshTable, setRefreshTable }: TableSales
         setLoadingGetSales(true)
         const response: responseApiRouteType = await getSalesServices()
         if (response.request_ok) {
-            setSales(response.response as Sale[])
+            const data = response.response as Sale[]
+            setSales(Array.isArray(data) ? data : [])
         }
         setLoadingGetSales(false)
     }
 
     function openModalf(sale: Sale) {
-        setOpenModalDelete({ id: sale.id, name: `${sale.pessoa.nome} - ${sale.produto.nome}` })
+        setOpenModalDelete({ id: String(sale.id), name: `${sale.pessoa.nome} - ${sale.produto.nome}` })
         setOpenModal(true)
     }
 
@@ -119,26 +120,34 @@ export default function TableSales({ refreshTable, setRefreshTable }: TableSales
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredSales.map((sale) => (
-                            <TableRow key={sale.id}>
-                                <TableCell>{sale.pessoa.nome}</TableCell>
-                                <TableCell>{sale.produto.nome}</TableCell>
-                                <TableCell>{sale.quantidade}</TableCell>
-                                <TableCell>{formatPrice(sale.precoNaHora)}</TableCell>
-                                <TableCell>{formatPrice(sale.precoNaHora * sale.quantidade)}</TableCell>
-                                <TableCell>
-                                    <div className="flex gap-2 items-center">
-                                        <Button
-                                            variant={'destructive'}
-                                            size={'lg'}
-                                            onClick={() => openModalf(sale)}
-                                        >
-                                            <Trash2 />
-                                        </Button>
-                                    </div>
+                        {filteredSales.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                                    Não há vendas para exibir
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : (
+                            filteredSales.map((sale) => (
+                                <TableRow key={sale.id}>
+                                    <TableCell>{sale.pessoa.nome}</TableCell>
+                                    <TableCell>{sale.produto.nome}</TableCell>
+                                    <TableCell>{sale.quantidade}</TableCell>
+                                    <TableCell>{formatPrice(sale.precoNaHora)}</TableCell>
+                                    <TableCell>{formatPrice(sale.precoNaHora * sale.quantidade)}</TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-2 items-center">
+                                            <Button
+                                                variant={'destructive'}
+                                                size={'lg'}
+                                                onClick={() => openModalf(sale)}
+                                            >
+                                                <Trash2 />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </div>

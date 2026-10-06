@@ -39,18 +39,32 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
     const [personId, setPersonId] = useState<string | null>(null)
     const [productId, setProductId] = useState<string | null>(null)
     const [quantity, setQuantity] = useState("1")
+    const [price, setPrice] = useState("")
     const [loadingForms, setLoadingForms] = useState(false)
 
 
     async function loadOptions() {
         const peopleResponse: responseApiRouteType = await getPeopleServices()
         if (peopleResponse.request_ok) {
-            setPeople(peopleResponse.response as SalePerson[])
+            const peopleData = peopleResponse.response as SalePerson[]
+            setPeople(Array.isArray(peopleData) ? peopleData : [])
         }
 
         const productsResponse: responseApiRouteType = await getProductsServices()
         if (productsResponse.request_ok) {
-            setProducts(productsResponse.response as SaleProduct[])
+            const productsData = productsResponse.response as SaleProduct[]
+            const activeProducts = Array.isArray(productsData)
+                ? productsData.filter((product) => product.ativo)
+                : []
+            setProducts(activeProducts)
+        }
+    }
+
+    function handleSelectProduct(value: string | null) {
+        setProductId(value)
+        const selectedProduct = products.find((product) => String(product.id) === value)
+        if (selectedProduct) {
+            setPrice((selectedProduct.preco / 100).toFixed(2))
         }
     }
 
@@ -66,8 +80,19 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
             return
         }
 
+        const priceInCents = Math.round(Number(price.replace(",", ".")) * 100)
+        if (!Number.isFinite(priceInCents) || priceInCents <= 0) {
+            toast.error("Informe um preço válido")
+            return
+        }
+
         setLoadingForms(true)
-        const response: responseApiRouteType = await createSalesServices(personId, productId, quantityNumber)
+        const response: responseApiRouteType = await createSalesServices(
+            Number(personId),
+            Number(productId),
+            quantityNumber,
+            priceInCents
+        )
         if (response.request_ok) {
             toast.success("Venda registrada com sucesso")
             setRefreshTable(true)
@@ -84,6 +109,7 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
         setPersonId(null)
         setProductId(null)
         setQuantity("1")
+        setPrice("")
     }, [open])
 
 
@@ -102,14 +128,14 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione uma pessoa...">
                                 {(value) =>
-                                    people.find((person) => person.id === value)?.nome ??
+                                    people.find((person) => String(person.id) === value)?.nome ??
                                     "Selecione uma pessoa..."
                                 }
                             </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                             {people.map((person) => (
-                                <SelectItem key={person.id} value={person.id}>
+                                <SelectItem key={person.id} value={String(person.id)}>
                                     {person.nome}
                                 </SelectItem>
                             ))}
@@ -117,23 +143,33 @@ export default function ModalFormsSales({ open, onOpenChange, setRefreshTable }:
                     </Select>
 
                     <Label>Produto</Label>
-                    <Select value={productId} onValueChange={setProductId}>
+                    <Select value={productId} onValueChange={handleSelectProduct}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione um produto...">
                                 {(value) =>
-                                    products.find((product) => product.id === value)?.nome ??
+                                    products.find((product) => String(product.id) === value)?.nome ??
                                     "Selecione um produto..."
                                 }
                             </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                             {products.map((product) => (
-                                <SelectItem key={product.id} value={product.id}>
+                                <SelectItem key={product.id} value={String(product.id)}>
                                     {product.nome}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
+
+                    <Label>Preço</Label>
+                    <Input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        placeholder="0,00"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                    />
 
                     <Label>Quantidade</Label>
                     <div className="flex items-center gap-2">

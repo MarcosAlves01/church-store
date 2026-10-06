@@ -1,21 +1,21 @@
 export type SalePerson = {
-    id: string,
+    id: number,
     nome: string,
     telefone: string | null,
     pago: boolean
 }
 
 export type SaleProduct = {
-    id: string,
+    id: number,
     nome: string,
     preco: number,
     ativo: boolean
 }
 
 export type Sale = {
-    id: string,
-    pessoaId: string,
-    produtoId: string,
+    id: number,
+    pessoaId: number,
+    produtoId: number,
     quantidade: number,
     precoNaHora: number,
     criadoEm: string,
