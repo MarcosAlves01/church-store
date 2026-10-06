@@ -23,6 +23,9 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { Separator } from "@/components/ui/separator"
+import { useAuth } from "@/app/modules/Auth/AuthContext"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const menuItems = [
     {
@@ -51,6 +54,7 @@ export function AppSidebar() {
     const pathname = usePathname()
     const { state } = useSidebar()
     const isCollapsed = state === "collapsed"
+    const { usuario, loading, logout } = useAuth()
 
 
     return (
@@ -103,19 +107,33 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
 
-            {/* <Separator />
-
-            <SidebarFooter className="p-4">
-                <div className="flex items-center gap-3">
-                    <div className="flex flex-1 flex-col text-sm">
-                        <span className="font-medium">Marcos Alves</span>
-                        <span className="text-xs text-muted-foreground">marcos@email.com</span>
-                    </div>
-                    <button className="text-muted-foreground hover:text-foreground">
-                        <LogOut className="size-4" />
-                    </button>
-                </div>
-            </SidebarFooter> */}
+            {!isCollapsed && (
+                <>
+                    <Separator />
+                    <SidebarFooter className="p-4">
+                        <div className="flex items-center gap-3">
+                            {loading ? (
+                                <div className="flex flex-1 flex-col gap-1">
+                                    <Skeleton className="h-4 w-24" />
+                                    <Skeleton className="h-3 w-32" />
+                                </div>
+                            ) : (
+                                <div className="flex flex-1 flex-col text-sm overflow-hidden">
+                                    <span className="font-medium truncate">{usuario?.nome ?? "—"}</span>
+                                    <span className="text-xs text-muted-foreground truncate">{usuario?.email ?? ""}</span>
+                                </div>
+                            )}
+                            <button
+                                onClick={logout}
+                                className="text-muted-foreground hover:text-foreground cursor-pointer"
+                                aria-label="Sair"
+                            >
+                                <LogOut className="size-4" />
+                            </button>
+                        </div>
+                    </SidebarFooter>
+                </>
+            )}
         </Sidebar>
     )
 }
