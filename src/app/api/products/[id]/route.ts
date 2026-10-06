@@ -4,13 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 type Params = { params: Promise<{ id: string }> }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
+export async function DELETE(req: NextRequest, { params }: Params) {
+    const token = req.cookies.get("token")?.value
     const { id } = await params
     try {
-        const response = await mockAPI(`/products/${id}`, {
+        const response = await mockAPI(`/produtos/${id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         })
 
@@ -26,13 +28,15 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
+    const token = req.cookies.get("token")?.value
     const { id } = await params
     const { nome, preco, ativo } = await req.json()
     try {
-        const response = await mockAPI(`/products/${id}`, {
+        const response = await mockAPI(`/produtos/${id}`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
                 nome,

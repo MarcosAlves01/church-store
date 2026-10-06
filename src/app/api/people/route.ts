@@ -3,9 +3,15 @@ import { SuccesResponseApi } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const token = req.cookies.get("token")?.value
     try {
-        const response = await mockAPI('/people')
+        const response = await mockAPI('/pessoas', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
         const data = await response.json()
         const responseDTO = SuccesResponseApi(response.status, data)
         return NextResponse.json(responseDTO)
@@ -18,12 +24,14 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+    const token = req.cookies.get("token")?.value
     const { nome, telefone } = await req.json()
     try {
-        const response = await mockAPI('/people', {
+        const response = await mockAPI('/pessoas', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
                 nome,

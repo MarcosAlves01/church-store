@@ -4,13 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 type Params = { params: Promise<{ id: string }> }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
+export async function DELETE(req: NextRequest, { params }: Params) {
+    const token = req.cookies.get("token")?.value
     const { id } = await params
     try {
-        const response = await mockAPI(`/sales/${id}`, {
+        const response = await mockAPI(`/vendas/${id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         })
 
