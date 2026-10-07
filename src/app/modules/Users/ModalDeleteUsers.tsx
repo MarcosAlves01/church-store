@@ -1,0 +1,48 @@
+import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
+
+type ModalDeleteUsersProps = {
+    open: boolean;
+    onOpenChange: () => void;
+    userName: string;
+    onChange: () => void;
+    loading?: boolean;
+}
+
+export default function ModalDeleteUsers({ open, onOpenChange, userName, onChange, loading }: ModalDeleteUsersProps) {
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Excluir Usuário</DialogTitle>
+                    <DialogDescription>
+                        Tem certeza que deseja excluir este usuário?
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <div className="flex justify-between items-center w-full">
+                        <span>
+                            {userName}
+                        </span>
+                        <Button
+                            variant="destructive"
+                            onClick={onChange}
+                            disabled={loading}
+                        >
+                            {loading ? <Spinner /> : "Excluir"}
+                        </Button>
+                    </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
