@@ -4,4 +4,10 @@ const api = (baseURL: string) => {
     }
 }
 
-export const mockAPI = api('http://localhost:3000')
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+
+if (!apiBaseUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL não está configurada")
+}
+
+export const mockAPI = api(apiBaseUrl.replace(/\/$/, ""))
