@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Wallet, Users, UserCheck, Package, PackageCheck, ShoppingCart, Receipt, Check, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { SummaryData } from "./types";
-import { getSummaryServices } from "./Summary.services";
+import { PessoaComVendas, Sale, SummaryData } from "./types";
+import { getSalesServices, getSummaryServices } from "./Summary.services";
 import { responseApiRouteType } from "@/lib/types";
+import ModalComprasPessoa from "./ModalComprasPessoa";
 
 function formatPrice(total: number) {
     return (total / 100).toLocaleString("pt-BR", {
@@ -27,16 +28,25 @@ type StatusFilter = "todos" | "pagos" | "pendentes"
 
 export default function Summary() {
     const [summary, setSummary] = useState<SummaryData | null>(null)
+    const [sales, setSales] = useState<Sale[]>([])
     const [loadingSummary, setLoadingSummary] = useState(true)
     const [search, setSearch] = useState("")
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("todos")
+    const [selectedPessoa, setSelectedPessoa] = useState<PessoaComVendas | null>(null)
+    const [modalOpen, setModalOpen] = useState(false)
 
 
     async function getSummary() {
         setLoadingSummary(true)
-        const response: responseApiRouteType = await getSummaryServices()
-        if (response.request_ok) {
-            setSummary(response.response as SummaryData)
+        const [summaryResponse, salesResponse]: responseApiRouteType[] = await Promise.all([
+            getSummaryServices(),
+            getSalesServices()
+        ])
+        if (summaryResponse.request_ok) {
+            setSummary(summaryResponse.response as SummaryData)
+        }
+        if (salesResponse.request_ok) {
+            setSales(salesResponse.response as Sale[])
         }
         setLoadingSummary(false)
     }
@@ -45,6 +55,16 @@ export default function Summary() {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         getSummary()
     }, [])
+
+    function handleOpenPessoa(pessoa: PessoaComVendas) {
+        setSelectedPessoa(pessoa)
+        setModalOpen(true)
+    }
+
+    function handleCloseModal() {
+        setModalOpen(false)
+        setSelectedPessoa(null)
+    }
 
     const cards: SummaryCard[] = summary ? [
         {
@@ -199,9 +219,11 @@ export default function Summary() {
                     ) : summary && filteredPessoas.length > 0 ? (
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                             {filteredPessoas.map((pessoa) => (
-                                <div
+                                <button
+                                    type="button"
                                     key={pessoa.id}
-                                    className={`flex flex-col gap-3 rounded-lg border border-l-4 p-4 ${pessoa.pago ? "border-l-green-500" : "border-l-red-500"}`}
+                                    onClick={() => handleOpenPessoa(pessoa)}
+                                    className={`flex flex-col gap-3 rounded-lg border border-l-4 p-4 text-left transition-colors hover:bg-muted/50 ${pessoa.pago ? "border-l-green-500" : "border-l-red-500"}`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="flex size-10 items-center justify-center rounded-full bg-muted text-sm font-semibold uppercase">
@@ -224,7 +246,7 @@ export default function Summary() {
                                             Pendente
                                         </span>
                                     )}
-                                </div>
+                                </button>
                             ))}
                         </div>
                     ) : (
@@ -234,6 +256,14 @@ export default function Summary() {
                     )}
                 </CardContent>
             </Card>
+
+            <ModalComprasPessoa
+                open={modalOpen}
+                onOpenChange={handleCloseModal}
+                pessoa={selectedPessoa}
+                sales={sales}
+                onStatusChanged={getSummary}
+            />
         </div>
     )
 }
