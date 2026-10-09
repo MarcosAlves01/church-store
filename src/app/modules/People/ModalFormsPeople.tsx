@@ -43,6 +43,12 @@ export default function ModalFormsPeople({ mode, open, onOpenChange, people, set
         setLoadingForms(true)
         if (mode === 'create') {
             response = await createPeopleServices(name, phone)
+            if (response.status === 409) {
+                const conflito = response.response as { message?: string } | null
+                toast.error(conflito?.message || "Pessoa já cadastrada")
+                setLoadingForms(false)
+                return
+            }
             if (response.request_ok) {
                 toast.success("Pessoa cadastrada com sucesso")
                 setRefreshTable(true)

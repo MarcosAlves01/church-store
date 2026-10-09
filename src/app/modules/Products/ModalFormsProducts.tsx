@@ -50,6 +50,12 @@ export default function ModalFormsProducts({ mode, open, onOpenChange, product, 
         setLoadingForms(true)
         if (mode === 'create') {
             response = await createProductsServices(name, priceInCents)
+            if (response.status === 409) {
+                const conflito = response.response as { message?: string } | null
+                toast.error(conflito?.message || "Produto já cadastrado")
+                setLoadingForms(false)
+                return
+            }
             if (response.request_ok) {
                 toast.success("Produto cadastrado com sucesso")
                 setRefreshTable(true)
